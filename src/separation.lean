@@ -8,6 +8,15 @@ variables {Ω : Type} [IncidencePlane Ω]
 variables {A B C P Q R : Ω}
 variables {ℓ r s t : Line Ω}
 
+lemma collinear_of_between' {A B C : Ω} : (A * B * C) → collinear ({A, B, C} : set Ω) :=
+begin
+intro h,
+cases collinear_of_between h with r hr,
+use r,
+simp,
+exact hr,
+end
+
 lemma ne_of_not_share_point  (hPr : P ∈ r)(hPs : P ∉ s): r ≠ s:=
 begin
 intro h,
@@ -145,9 +154,13 @@ begin
         rw hK,
         rw ← collinear_iff_on_line_through PnotD,
         have hEA := (different_of_between hE).2.2,
-        
-        have hT := collinear_union ({D, A, E}: set Ω) ({A, P, E}: set Ω) hEA (collinear_of_between hE) (collinear_of_between hP),
-        
+
+        have hT := collinear_union ({D, A, E}: set Ω) ({A, P, E}: set Ω) hEA (collinear_of_between' hE) (collinear_of_between' hP),
+        simp at hT,
+        apply collinear_subset ({P, D, A} : set Ω) ({P, D, A, E} : set Ω)_ hT,
+        intros x hx,
+        simp at hx ⊢,
+        tauto, 
       },
       
     },
@@ -155,7 +168,11 @@ begin
       exact hE,
     },
     {
-      sorry
+      cases hDnotE with hDnotE1 hDnotE2,
+      cases hDnotE2 with hDnotE2 hDnotE3,
+      intro,
+      
+
     },
     {
       sorry
@@ -225,3 +242,4 @@ lemma at_most_two_classes_general (hA : A ∉ ℓ) (hB : B ∉ ℓ) (hC : C ∉ 
 begin
   sorry
 end
+
